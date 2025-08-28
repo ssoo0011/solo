@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${@environment.getProperty('global.title')}"></title>
+    <th:block th:replace="layout/fragments/css :: config"/>
+
+    <!-- custom script -->
+    <th:block layout:fragment="css"></th:block>
+</head>
+
+<body>
+    <div id="wrapper">
+        <th:block th:replace="layout/fragments/menu :: menu"/>
+
+        <th:block layout:fragment="content"></th:block>
+
+        <th:block th:replace="layout/fragments/footer :: footer"/>
+    </div>
+
+    <!--/* common script */-->
+    <th:block th:replace="layout/fragments/js :: config"/>
+
+    <!--/* custom script */-->
+    <th:block layout:fragment="script">
+    </th:block>
+</body>
+</html>

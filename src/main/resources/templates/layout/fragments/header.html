@@ -1,0 +1,21 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="header">
+    <div class="row border-bottom">
+        <div class="navbar-header">
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+        </div>
+        <ul class="nav navbar-top-links navbar-right">
+            <li>
+                <a href="/changePassword">
+                    <i class="fa fa-user-circle-o"></i> 비밀번호 변경
+                </a>
+            </li>
+            <li>
+                <a href="/logout">
+                    <i class="fa fa-sign-out"></i> 로그아웃
+                </a>
+            </li>
+        </ul>
+    </div>
+</th:block>
+</html>
