@@ -2,6 +2,9 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.5'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'io.freefair.sass-java' version "8.14.2"
+    id 'io.freefair.sass-webjars' version '8.14.2'   // ★ 추가
+
 }
 
 group = 'solo.proj'
@@ -37,8 +40,58 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.5'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.webjars.npm:bootstrap:5.3.3'
+
+}
+
+import io.freefair.gradle.plugins.sass.SassCompile
+import com.sass_lang.embedded_protocol.OutputStyle
+
+sass {
+    outputStyle = OutputStyle.COMPRESSED   // 개발 중엔 EXPANDED도 OK
+    sourceMapEnabled = false
+}
+
+
+tasks.withType(io.freefair.gradle.plugins.sass.SassCompile).configureEach {
+    // ★ 엔트리만 지정 (다른 .scss는 파셜로 @use해서 포함)
+    source = fileTree("src/main/resources/static/scss") { include "app.scss" }
+    destinationDir = file("src/main/resources/static/css")
+}
+// 리소스 처리/실행 전에 SCSS가 꼭 컴파일되도록
+tasks.configureEach {
+    if (name == 'processResources' || name == 'bootRun') {
+        dependsOn 'compileSass'
+    }
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+
+// WebJar 안의 Bootstrap SCSS를 로컬로 복사해오는 작업
+configurations {
+    webjars
+}
+
+dependencies {
+    webjars 'org.webjars.npm:bootstrap:5.3.3'
+}
+
+tasks.register('extractBootstrapScss', Copy) {
+    def bootstrapJar = configurations.webjars.resolve().find { it.name.contains('bootstrap') }
+    if (bootstrapJar == null) {
+        throw new GradleException("Bootstrap WebJar not found")
+    }
+    from(zipTree(bootstrapJar)) {
+        include 'META-INF/resources/webjars/bootstrap/**/scss/**'
+        eachFile { f ->
+            // META-INF/resources/webjars/bootstrap/<ver>/scss/ 이하만 남기고 경로 재매핑
+            f.path = "vendor/bootstrap/scss/" + f.path.replaceFirst(/.*\/scss\//, '')
+        }
+        includeEmptyDirs = false
+    }
+    into 'src/main/resources/static/scss'
+}
+

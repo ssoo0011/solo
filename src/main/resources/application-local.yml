@@ -18,5 +18,5 @@ spring:
     cache: false
 
 global:
-  title: "???? ??????~"
+  title: "소영이의 프로젝트~"
 

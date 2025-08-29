@@ -16,11 +16,18 @@
 
 <body>
     <div id="wrapper">
+
         <th:block th:replace="layout/fragments/menu :: menu"/>
 
-        <th:block layout:fragment="content"></th:block>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <th:block th:replace="layout/fragments/header :: header"/>
 
-        <th:block th:replace="layout/fragments/footer :: footer"/>
+                <th:block layout:fragment="content"></th:block>
+
+                <th:block th:replace="layout/fragments/footer :: footer"/>
+            </div>
+        </div>
     </div>
 
     <!--/* common script */-->
